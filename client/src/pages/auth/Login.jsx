@@ -1,27 +1,14 @@
 import React from "react";
-import { Button, Carousel, Form, Input } from "antd";
+import { Button, Carousel, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import AuthCarousel from "../../components/register/AuthCarousel";
-const Register = () => {
+const Login = () => {
   return (
     <div className="h-screen">
       <div className="flex justify-between h-full ">
         <div className="xl:px-20 w-full px-10 flex flex-col h-full justify-center relative">
           <h1 className="text-center text-5xl font-bold mb-2">LOGO</h1>
           <Form layout="vertical">
-            <Form.Item
-              label="Kullanıcı Adını Giriniz"
-              name={"username"}
-              rules={[
-                {
-                  required: true,
-                  message: "Kullanıcı Adı Alanı Boş Bırakılamaz",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-
             <Form.Item
               label="Email Giriniz"
               name={"email"}
@@ -48,27 +35,22 @@ const Register = () => {
               <Input.Password />
             </Form.Item>
 
-            <Form.Item
-              label="Tekrar Şifre Giriniz"
-              name={"passwordAgain"}
-              rules={[
-                {
-                  required: true,
-                  message: "Tekrar Şifre Alanı Boş Bırakılamaz",
-                },
-              ]}
-            >
-              <Input.Password />
+            <Form.Item name={"rememberMe"} valuePropName="checked">
+              <div className="flex justify-between">
+                <Checkbox>Remember Me</Checkbox>
+                <Link> Forgot Password</Link>
+              </div>
             </Form.Item>
+
             <Button type="primary" htmlType="submit" className="w-full large">
-              Kaydol
+              Giriş Yap
             </Button>
           </Form>
           <div className="flex justify-center absolute left-0 bottom-10 w-full">
-            Bir hesabınız varmı ?{" "}
-            <Link to={"/login"} className="text-blue-600">
+            Henüz bir hesabınız yokmu ?{" "}
+            <Link to={"/register"} className="text-blue-600">
               {" "}
-              Şimdi Giriş Yapın
+              Şimdi Kaydol
             </Link>
           </div>
         </div>
@@ -105,4 +87,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
