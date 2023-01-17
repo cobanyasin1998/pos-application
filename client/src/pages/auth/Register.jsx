@@ -49,13 +49,26 @@ const Register = () => {
             </Form.Item>
 
             <Form.Item
-              label="Tekrar Şifre Giriniz"
+              label="Şifre Tekrar"
               name={"passwordAgain"}
+              dependencies={["password"]}
               rules={[
                 {
                   required: true,
-                  message: "Tekrar Şifre Alanı Boş Bırakılamaz",
+                  message: "Şifre Tekrar Alanı Boş Bırakılamaz!",
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "Şifreler Aynı Olmak Zorunda!"
+                      )
+                    );
+                  },
+                }),
               ]}
             >
               <Input.Password />
