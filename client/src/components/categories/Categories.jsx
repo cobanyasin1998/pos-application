@@ -1,45 +1,45 @@
 import React from 'react'
-
+import "./style.css";
 const Categories = () => {
   return (
     <ul className='flex gap-4 md:flex-col text-lg'>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="">
             <span>Tümü</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>Meyve</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>Yiyecek</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>İçecek</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>Meyve</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>Yiyecek</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>İçecek</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>Meyve</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>Yiyecek</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>İçecek</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>Meyve</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>Yiyecek</span>
         </li>
-        <li className="bg-green-700 px-6 py-10 text-white cursor-pointer hover:bg-pink-600 transition-all text-center m-w-[145px]">
+        <li className="category-item">
             <span>İçecek</span>
         </li>
     </ul>
