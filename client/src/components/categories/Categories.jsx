@@ -5,10 +5,10 @@ import { useState } from "react";
 
 import { Input, Modal, Form, Button, message } from "antd";
 
-const Categories = () => {
+const Categories = ({ categories, setCategories }) => {
   const [isAddModalOpen, setisAddModalOpen] = useState(false);
 
-  const[form] = Form.useForm();
+  const [form] = Form.useForm();
 
   const onFinish = (values) => {
     try {
@@ -16,57 +16,22 @@ const Categories = () => {
         method: "POST",
         body: JSON.stringify(values),
         headers: { "Content-type": "application/json; charset=UTF-8" },
-   
       });
-      message.success("Kategori Başarıyla Eklendi")
+      message.success("Kategori Başarıyla Eklendi");
       form.resetFields();
+      setCategories([...categories, values]);
     } catch (err) {
-      console.log(err);
+      message.danger(err);
     }
   };
 
   return (
     <ul className="flex gap-4 md:flex-col text-lg">
-      <li className="">
-        <span>Tümü</span>
-      </li>
-      <li className="category-item">
-        <span>Meyve</span>
-      </li>
-      <li className="category-item">
-        <span>Yiyecek</span>
-      </li>
-      <li className="category-item">
-        <span>İçecek</span>
-      </li>
-      <li className="category-item">
-        <span>Meyve</span>
-      </li>
-      <li className="category-item">
-        <span>Yiyecek</span>
-      </li>
-      <li className="category-item">
-        <span>İçecek</span>
-      </li>
-      <li className="category-item">
-        <span>Meyve</span>
-      </li>
-      <li className="category-item">
-        <span>Yiyecek</span>
-      </li>
-      <li className="category-item">
-        <span>İçecek</span>
-      </li>
-      <li className="category-item">
-        <span>Meyve</span>
-      </li>
-      <li className="category-item">
-        <span>Yiyecek</span>
-      </li>
-      <li className="category-item">
-        <span>İçecek</span>
-      </li>
-
+      {categories.map((item) => (
+        <li className="category-item" key={item._id}>
+          <span>{item.title}</span>
+        </li>
+      ))}
       <li
         className="category-item !bg-purple-800 hover:opacity-90"
         onClick={() => {
