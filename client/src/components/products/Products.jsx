@@ -5,7 +5,8 @@ import { useState } from "react";
 import ProductItem from "./ProductItem";
 import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import Add from "./Add";
-const Products = () => {
+
+const Products = ({ categories }) => {
   const [products, setProducts] = useState([]);
   const [isAddModalOpen, setisAddModalOpen] = useState(false);
 
@@ -25,10 +26,15 @@ const Products = () => {
   return (
     <div className="products-wrapper grid gap-4 grid-cols-card">
       {products.map((item) => (
-        <ProductItem item={item} />
+        <ProductItem item={item} key={item._id} />
       ))}
 
-      <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none bg-purple-800 flex justify-center items-center hover:opacity-90" onClick={()=>{setisAddModalOpen(true)}}>
+      <div
+        className="product-item border hover:shadow-lg cursor-pointer transition-all select-none bg-purple-800 flex justify-center items-center hover:opacity-90"
+        onClick={() => {
+          setisAddModalOpen(true);
+        }}
+      >
         <PlusOutlined className="text-white md:text-2xl" />
       </div>
       <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none bg-orange-800 flex justify-center items-center hover:opacity-90">
@@ -38,6 +44,9 @@ const Products = () => {
       <Add
         isAddModalOpen={isAddModalOpen}
         setisAddModalOpen={setisAddModalOpen}
+        categories={categories}
+        setProducts={setProducts}
+        products={products}
       />
     </div>
   );

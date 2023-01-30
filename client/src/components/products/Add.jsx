@@ -1,31 +1,35 @@
 import React from "react";
-import { Input, Modal, Form, Button, message } from "antd";
+import { Input, Modal, Form, Button, message, Select } from "antd";
 
 const Add = ({
   isAddModalOpen,
   setisAddModalOpen,
   categories,
-  setCategories,
+  setProducts,
+  products,
 }) => {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
     try {
-      fetch("http://localhost:5000/api/categories/add-category", {
+      fetch("http://localhost:5000/api/products/add-product", {
         method: "POST",
         body: JSON.stringify(values),
         headers: { "Content-type": "application/json; charset=UTF-8" },
       });
-      message.success("Kategori Başarıyla Eklendi");
+      message.success("Ürün Başarıyla Eklendi");
       form.resetFields();
 
-      setCategories([
-        ...categories,
+      setProducts([
+        ...products,
         {
+          ...values,
           _id: Math.random(),
-          title: values.title,
+          price: Number(values.price),
         },
       ]);
+
+      setisAddModalOpen(false)
     } catch (err) {
       message.danger(err);
     }
@@ -64,9 +68,8 @@ const Add = ({
               },
             ]}
           >
-            <Input  placeholder="Bir Ürün Görseli Giriniz" />
+            <Input placeholder="Bir Ürün Görseli Giriniz" />
           </Form.Item>
-
 
           <Form.Item
             name={"price"}
@@ -78,24 +81,34 @@ const Add = ({
               },
             ]}
           >
-            <Input placeholder="Bir Ürün Fiyatı Giriniz"  />
+            <Input placeholder="Bir Ürün Fiyatı Giriniz" />
           </Form.Item>
 
-{/* 
           <Form.Item
-            name={"title"}
-            label="Ürün Adı Ekle"
+            name={"category"}
+            label="Ürün Kategorisi Ekle"
             rules={[
               {
                 required: true,
-                message: "Ürün Adı Alanı Boş Geçilemez",
+                message: "Ürün Kategorisi Alanı Boş Geçilemez",
               },
             ]}
           >
-            <Input />
+            <Select
+              showSearch
+              placeholder="Ürün Kategorisi Seç"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.title ?? "").includes(input)
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.title ?? "")
+                  .toLowerCase()
+                  .localeCompare(optionB?.label ?? "")
+              }
+              options={categories}
+            />
           </Form.Item>
- */}
-
 
           <Form.Item className="flex justify-end mb-0">
             <Button type="primary" htmlType="submit">
