@@ -1,50 +1,81 @@
-import { Modal, Table, Form, Input, Button, message } from "antd";
+import { Table, Form, Button, message, Modal, Select, Input } from "antd";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const Edit = ({
-  isEditModalOpen,
-  setisEditModalOpen,
-  categories,
-  setCategories,
-}) => {
-  const [editingRow, setEditingRow] = useState({});
+const Edit = () => {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState({});
+
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products/get-all");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        message.danger("Bğlantı Hatası");
+      }
+    };
+    getProducts();
+  }, []);
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/categories/get-all");
+        const data = await res.json();
+
+        data &&
+          setCategories(
+            data.map((item) => {
+              return { ...item, value: item.title };
+            })
+          );
+      } catch (err) {
+        message.danger("Bğlantı Hatası");
+      }
+    };
+    getCategories();
+  }, []);
   const onFinish = (values) => {
     try {
-      fetch("http://localhost:5000/api/categories/update-category", {
+      fetch("http://localhost:5000/api/products/update-product", {
         method: "PUT",
-        body: JSON.stringify({ ...values, categoryId: editingRow._id }),
+        body: JSON.stringify({ ...values, productId: editingItem._id }),
         headers: { "Content-type": "application/json; charset=UTF-8" },
       });
-      message.success("Kategori Başarıyla Güncellendi");
+      message.success("Ürün Başarıyla Güncellendi");
 
-      setCategories(
-        categories.map((item) => {
-          if (item._id === editingRow._id) {
-            return { ...item, title: values.title };
+      setProducts(
+        products.map((item) => {
+          if (item._id === editingItem._id) {
+            return values;
           }
           return item;
         })
       );
     } catch (err) {
-      message.danger("Kategori Güncellenemedi");
+      message.danger("Ürün Güncellenemedi");
     }
   };
 
-  const deleteCategory = (id) => {
+  const deleteProduct = (id) => {
     if (window.confirm("Emin misiniz")) {
       try {
-        fetch("http://localhost:5000/api/categories/delete-category", {
+        fetch("http://localhost:5000/api/products/delete-product", {
           method: "DELETE",
-          body: JSON.stringify({ categoryId: id }),
+          body: JSON.stringify({ productId: id }),
           headers: { "Content-type": "application/json; charset=UTF-8" },
         });
-        message.success("Kategori Silindi");
+        message.success("Ürün Silindi");
 
-        setCategories(categories.filter((item) => item._id !== id));
+        setProducts(products.filter((item) => item._id !== id));
       } catch (err) {
-        message.danger("Kategori Silinemedi");
+        message.danger("Ürün Silinemedi");
       }
     }
   };
@@ -53,37 +84,40 @@ const Edit = ({
     {
       title: "Ürün Adı",
       dataIndex: "title",
+      width: "4%",
       render: (_, record) => {
-        if (record._id === editingRow._id) {
-          return (
-            <Form.Item className="mb-0" name="title">
-              <Input defaultValue={record.title} />
-            </Form.Item>
-          );
-        } else {
-          return (
-            <>
-              <p>{record.title}</p>
-            </>
-          );
-        }
+        return (
+          <>
+            <p>{record.title}</p>
+          </>
+        );
       },
     },
     {
       title: "Ürün Görseli",
-      dataIndex: "img"
+      dataIndex: "img",
+      width: "4%",
+      render: (_, record) => {
+        return (
+          <img src={record.img} alt="" className="w-full h-20 object-cover" />
+        );
+      },
     },
     {
       title: "Ürün Fiyatı",
-      dataIndex: "price"
+      dataIndex: "price",
+      width: "4%",
     },
     {
       title: "Kategori",
-      dataIndex: "img"
+      dataIndex: "category",
+      width: "4%",
     },
     {
       title: "İşlemler",
       dataIndex: "action",
+      width: "4%",
+
       render: (text, record) => {
         return (
           <div>
@@ -91,19 +125,17 @@ const Edit = ({
               className="pl-0"
               type="link"
               onClick={() => {
-                setEditingRow(record);
+                setIsEditModalOpen(true);
+                setEditingItem(record);
               }}
             >
               Düzenle
             </Button>
 
-            <Button type="link" htmlType="submit" className="text-gray-500">
-              Kaydet
-            </Button>
             <Button
               type="link"
               danger
-              onClick={() => deleteCategory(record._id)}
+              onClick={() => deleteProduct(record._id)}
             >
               Sil
             </Button>
@@ -115,14 +147,103 @@ const Edit = ({
 
   return (
     <>
-      <Form onFinish={onFinish}>
-        <Table
-          bordered
-          dataSource={categories}
-          columns={columns}
-          rowKey={"_id"}
-        />
-      </Form>
+      <Table
+        bordered
+        dataSource={products}
+        scroll={{
+          x: 1000,
+          y: 600,
+        }}
+        columns={columns}
+        rowKey={"_id"}
+      />
+
+      <Modal
+        title="Yeni Ürün Ekle"
+        open={isEditModalOpen}
+        onCancel={() => {
+          setIsEditModalOpen(false);
+        }}
+        footer={false}
+      >
+        <Form
+          layout="vertical"
+          onFinish={onFinish}
+          form={form}
+          initialValues={editingItem}
+        >
+          <Form.Item
+            name={"title"}
+            label="Ürün Adı Ekle"
+            rules={[
+              {
+                required: true,
+                message: "Ürün Adı Alanı Boş Geçilemez",
+              },
+            ]}
+          >
+            <Input placeholder="Bir Ürün Adı Giriniz" />
+          </Form.Item>
+
+          <Form.Item
+            name={"img"}
+            label="Ürün Görseli Ekle"
+            rules={[
+              {
+                required: true,
+                message: "Ürün Görseli Alanı Boş Geçilemez",
+              },
+            ]}
+          >
+            <Input placeholder="Bir Ürün Görseli Giriniz" />
+          </Form.Item>
+
+          <Form.Item
+            name={"price"}
+            label="Ürün Fiyatı Ekle"
+            rules={[
+              {
+                required: true,
+                message: "Ürün Fiyatı Alanı Boş Geçilemez",
+              },
+            ]}
+          >
+            <Input placeholder="Bir Ürün Fiyatı Giriniz" />
+          </Form.Item>
+
+          <Form.Item
+            name={"category"}
+            label="Ürün Kategorisi Ekle"
+            rules={[
+              {
+                required: true,
+                message: "Ürün Kategorisi Alanı Boş Geçilemez",
+              },
+            ]}
+          >
+            <Select
+              showSearch
+              placeholder="Ürün Kategorisi Seç"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.title ?? "").includes(input)
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.title ?? "")
+                  .toLowerCase()
+                  .localeCompare(optionB?.label ?? "")
+              }
+              options={categories}
+            />
+          </Form.Item>
+
+          <Form.Item className="flex justify-end mb-0">
+            <Button type="primary" htmlType="submit">
+              Kaydet
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 };
