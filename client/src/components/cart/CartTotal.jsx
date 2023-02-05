@@ -1,11 +1,18 @@
 import { Button } from "antd";
 import React from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { deleteCart } from "../../redux/cartSlice";
+
 import {
   ClearOutlined,
   PlusCircleOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
 const CartTotal = () => {
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+
   return (
     <div className="cart h-full max-h-[calc(100vh_-_110px)] flex flex-col">
       <h2 className="bg-blue-600 text-center py-4 text-white font-bold -tracking-wide">
@@ -13,51 +20,60 @@ const CartTotal = () => {
       </h2>
 
       <ul className="cart-items px-2 flex flex-col gap-y-3 py-2 overflow-y-auto">
-        <li className="cart-item flex justify-between">
-          <div className="flex items-center">
-            <img
-              src="https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg"
-              alt=""
-              className="w-16 h-16 object-cover"
-            />
-            <div className="flex flex-col ml-2">
-              <b>Elma</b>
-              <span>12TL x 2</span>
+        {cart.cartItems.map((item) => (
+          <li className="cart-item flex justify-between" key={item._id}>
+            <div className="flex items-center">
+              <img
+                src={item.img}
+                alt=""
+                className="w-16 h-16 object-cover"
+                onClick={() => dispatch(deleteCart(item))}
+              />
+              <div className="flex flex-col ml-2">
+                <b>{item.title}</b>
+                <span>
+                  {item.price} x {item.quantity}
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <Button
-              type="primary"
-              size="small"
-              className="w-full  flex items-center justify-center !rounded-full"
-              icon={<PlusCircleOutlined />}
-            />
-            <span className="font-bold">1</span>
-            <Button
-              type="primary"
-              size="small"
-              className="w-full  flex items-center justify-center !rounded-full"
-              icon={<MinusCircleOutlined />}
-            />
-          </div>
-        </li>
+            <div className="flex items-center gap-x-2">
+              <Button
+                type="primary"
+                size="small"
+                className="w-full  flex items-center justify-center !rounded-full"
+                icon={<PlusCircleOutlined />}
+              />
+              <span className="font-bold">{item.quantity}</span>
+              <Button
+                type="primary"
+                size="small"
+                className="w-full  flex items-center justify-center !rounded-full"
+                icon={<MinusCircleOutlined />}
+              />
+            </div>
+          </li>
+        ))}
       </ul>
       <div className="cart-totals mt-auto">
         <div className="border-t border-b">
           <div className="justify-between flex p-2">
             <b>Ara Toplam</b>
-            <span>99TL</span>
+            <span>{(cart.total).toFixed(2)} TL</span>
           </div>
           <div className="justify-between flex p-2">
-            <b>KDV %8</b>
-            <span className="text-red-600">+7.92</span>
+            <b>KDV %{cart.tax}</b>
+            <span className="text-red-600">
+              +{((cart.total * cart.tax) / 100).toFixed(2)} TL
+            </span>
           </div>
         </div>
 
         <div className="border-b mt-4">
           <div className="justify-between flex p-2">
             <b className="text-xl text-green-500">Genel Toplam</b>
-            <span className="text-xl">200TL</span>
+            <span className="text-xl">
+              {(cart.total + (cart.total * cart.tax) / 100).toFixed(2)} TL
+            </span>
           </div>
         </div>
 
