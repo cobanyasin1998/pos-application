@@ -2,7 +2,12 @@ import { Button } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { deleteCart } from "../../redux/cartSlice";
+import {
+  deleteCart,
+  increment,
+  decrement,
+  fullReset,
+} from "../../redux/cartSlice";
 
 import {
   ClearOutlined,
@@ -20,45 +25,49 @@ const CartTotal = () => {
       </h2>
 
       <ul className="cart-items px-2 flex flex-col gap-y-3 py-2 overflow-y-auto">
-        {cart.cartItems.map((item) => (
-          <li className="cart-item flex justify-between" key={item._id}>
-            <div className="flex items-center">
-              <img
-                src={item.img}
-                alt=""
-                className="w-16 h-16 object-cover"
-                onClick={() => dispatch(deleteCart(item))}
-              />
-              <div className="flex flex-col ml-2">
-                <b>{item.title}</b>
-                <span>
-                  {item.price} x {item.quantity}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-x-2">
-              <Button
-                type="primary"
-                size="small"
-                className="w-full  flex items-center justify-center !rounded-full"
-                icon={<PlusCircleOutlined />}
-              />
-              <span className="font-bold">{item.quantity}</span>
-              <Button
-                type="primary"
-                size="small"
-                className="w-full  flex items-center justify-center !rounded-full"
-                icon={<MinusCircleOutlined />}
-              />
-            </div>
-          </li>
-        ))}
+        {cart.cartItems.length > 0
+          ? cart.cartItems.map((item) => (
+              <li className="cart-item flex justify-between" key={item._id}>
+                <div className="flex items-center">
+                  <img
+                    src={item.img}
+                    alt=""
+                    className="w-16 h-16 object-cover"
+                    onClick={() => dispatch(deleteCart(item))}
+                  />
+                  <div className="flex flex-col ml-2">
+                    <b>{item.title}</b>
+                    <span>
+                      {item.price} x {item.quantity}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-x-2">
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => dispatch(increment(item))}
+                    className="w-full  flex items-center justify-center !rounded-full"
+                    icon={<PlusCircleOutlined />}
+                  />
+                  <span className="font-bold">{item.quantity}</span>
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => dispatch(decrement(item))}
+                    className="w-full  flex items-center justify-center !rounded-full"
+                    icon={<MinusCircleOutlined />}
+                  />
+                </div>
+              </li>
+            ))
+          : "Sepette hiç ürün yoktur..."}
       </ul>
       <div className="cart-totals mt-auto">
         <div className="border-t border-b">
           <div className="justify-between flex p-2">
             <b>Ara Toplam</b>
-            <span>{(cart.total).toFixed(2)} TL</span>
+            <span>{cart.total.toFixed(2)} TL</span>
           </div>
           <div className="justify-between flex p-2">
             <b>KDV %{cart.tax}</b>
@@ -78,12 +87,19 @@ const CartTotal = () => {
         </div>
 
         <div className="py-4 px-2">
-          <Button type="primary" size="large" className="w-full">
+          <Button
+            disabled={cart.cartItems.length === 0}
+            type="primary"
+            size="large"
+            className="w-full"
+          >
             Sipariş Oluştur
           </Button>
           <Button
             type="primary"
             size="large"
+            disabled={cart.cartItems.length === 0}
+            onClick={() => dispatch(fullReset())}
             className="w-full mt-2 flex items-center justify-center"
             icon={<ClearOutlined />}
           >
