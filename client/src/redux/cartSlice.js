@@ -29,6 +29,7 @@ const cartSlice = createSlice({
 
       state.total -= action.payload.price * action.payload.quantity;
     },
+
     increment: (state, action) => {
       const cartItem = state.cartItems.find(
         (item) => item._id === action.payload._id
@@ -37,6 +38,7 @@ const cartSlice = createSlice({
       cartItem.quantity = cartItem.quantity += 1;
       state.total += action.payload.price;
     },
+
     decrement: (state, action) => {
       const cartItem = state.cartItems.find(
         (item) => item._id === action.payload._id
@@ -51,10 +53,12 @@ const cartSlice = createSlice({
 
       state.total -= action.payload.price;
     },
+
     fullReset: (state, action) => {
       state.cartItems = [];
       state.total = 0;
     },
+    
   },
 });
 

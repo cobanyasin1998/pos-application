@@ -1,43 +1,96 @@
-import { Button, Card,  Table } from "antd";
+import { Button, Card, Table } from "antd";
 import React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { increment, decrement, deleteCart } from "../../src/redux/cartSlice";
+
+import { useSelector } from "react-redux";
 import CreateBill from "../components/cart/CreateBill";
 import Header from "../components/header/Header";
-
+import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 const CardPage = () => {
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
-
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Ürün Görseli",
+      dataIndex: "img",
+      key: "img",
+      width: "120px",
+      render: (text) => {
+        return <img src={text} alt="" className="w-full h-20 object-cover" />;
+      },
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Ürün Adı",
+      dataIndex: "title",
+      key: "title",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Kategori",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "Ürün Fiyatı",
+      dataIndex: "price",
+      key: "price",
+      render: (txt) => {
+        return <span>{txt.toFixed(2)} TL</span>;
+      },
+    },
+    {
+      title: "Ürün Adeti",
+      dataIndex: "quantity",
+      key: "quantity",
+      render: (txt, record) => {
+        return (
+          <div className="flex items-center gap-x-2">
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => dispatch(increment(record))}
+              className="w-full  flex items-center justify-center !rounded-full"
+              icon={<PlusCircleOutlined />}
+            />
+            <span className="font-bold">{txt}</span>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => dispatch(decrement(record))}
+              className="w-full  flex items-center justify-center !rounded-full"
+              icon={<MinusCircleOutlined />}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      title: "Toplam Fiyat",
+      dataIndex: "price",
+      key: "price",
+      render: (txt, record) => {
+        return <span>{(record.quantity * record.price).toFixed(2)} TL</span>;
+      },
+    },
+    {
+      title: "İşlemler",
+      render: (_, record) => {
+        return (
+          <Button
+            type="link"
+            danger
+            onClick={() => {
+              dispatch(deleteCart(record));
+            }}
+          >
+            Sil
+          </Button>
+        );
+      },
     },
   ];
 
@@ -45,7 +98,7 @@ const CardPage = () => {
     <div>
       <Header />
       <div className="px-6">
-        <Table dataSource={dataSource} columns={columns} bordered />
+        <Table dataSource={cart.cartItems} columns={columns} bordered />
 
         <div className="cart-total flex justify-end mt-2">
           <Card className="w-72">
@@ -61,16 +114,21 @@ const CardPage = () => {
               <b>Toplam</b>
               <b>592.92₺</b>
             </div>
-            <Button className="mt-4 w-full" type="primary" size="large" onClick={()=>{setIsModalOpen(true)}}>
+            <Button
+              className="mt-4 w-full"
+              type="primary"
+              size="large"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
               Sipariş Oluştur
             </Button>
           </Card>
-
-
         </div>
       </div>
 
-    <CreateBill isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+      <CreateBill isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </div>
   );
 };
