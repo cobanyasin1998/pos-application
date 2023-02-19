@@ -2,6 +2,7 @@ import { Button } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   deleteCart,
   increment,
@@ -17,7 +18,7 @@ import {
 const CartTotal = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   return (
     <div className="cart h-full max-h-[calc(100vh_-_110px)] flex flex-col">
       <h2 className="bg-blue-600 text-center py-4 text-white font-bold -tracking-wide">
@@ -92,6 +93,9 @@ const CartTotal = () => {
             type="primary"
             size="large"
             className="w-full"
+            onClick={() => {
+              navigate("/cart");
+            }}
           >
             Sipariş Oluştur
           </Button>
