@@ -61,7 +61,7 @@ const CartTotal = () => {
                   />
                 </div>
               </li>
-            ))
+            )).reverse()
           : "Sepette hiç ürün yoktur..."}
       </ul>
       <div className="cart-totals mt-auto">
