@@ -9,7 +9,7 @@ const BillPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [billItems, setBillItems] = useState([]);
   const [customer, setCustomer] = useState();
-  console.log(customer);
+  
   useEffect(() => {
     const getBills = async () => {
       try {
