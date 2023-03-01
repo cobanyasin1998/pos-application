@@ -1,14 +1,44 @@
-import React from "react";
-import { Button, Carousel, Checkbox, Form, Input } from "antd";
+import React,{useState} from "react";
+import { Button, Carousel, Checkbox, Form, Input,message } from "antd";
 import { Link } from "react-router-dom";
 import AuthCarousel from "../../components/register/AuthCarousel";
+import { useNavigate } from "react-router-dom";
+
 const Login = () => {
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const onFinish = async (values) => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: { "Content-Type": "application/json; charset=UTF-8" },
+      });
+
+      if (res.status === 200) {
+        message.success("Giriş Başarılı");
+        navigate("/login");
+        setLoading(false);
+      }
+    } catch (error) {
+      message.error("Bir Hata Oluştu");
+    }
+  };
+
+
+
+
   return (
     <div className="h-screen">
       <div className="flex justify-between h-full ">
         <div className="xl:px-20 w-full px-10 flex flex-col h-full justify-center relative">
           <h1 className="text-center text-5xl font-bold mb-2">LOGO</h1>
-          <Form layout="vertical">
+          <Form layout="vertical" onClick={onFinish} initialValues={{
+            rememberMe: true
+          }}>
             <Form.Item
               label="Email Giriniz"
               name={"email"}
