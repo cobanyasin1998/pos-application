@@ -17,9 +17,13 @@ const Register = () => {
         headers: { "Content-Type": "application/json; charset=UTF-8" },
       });
 
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         message.success("Kayıt Başarılı");
         navigate("/login");
+        setLoading(false);
+      }
+      else  {
+        message.error("Hata");
         setLoading(false);
       }
     } catch (error) {
