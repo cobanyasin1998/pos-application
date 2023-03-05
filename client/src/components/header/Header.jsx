@@ -1,6 +1,6 @@
-import { Badge, Input } from "antd";
+import { Badge, Input, message } from "antd";
 import { useSelector } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
 import {
   SearchOutlined,
   HomeOutlined,
@@ -15,6 +15,14 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   const cart = useSelector((state) => state.cart);
+  const navigate = useNavigate();
+  const logOut = () => {
+    if (window.confirm("Çıkış Yapmak İstediğinize Emin Misiniz?")) {
+      localStorage.removeItem("posUser");
+      navigate("/login");
+      message.success("Çıkış işlemi başarılı.");
+    }
+  };
 
   return (
     <div className="border-b mb-6">
@@ -80,13 +88,13 @@ const Header = () => {
             <BarChartOutlined className="md:text-2xl text-xl" />
             <span className="md:text-xs text-[10px]">İstatistikler</span>
           </Link>
-          <Link
-            to={"/"}
-            className="menu-link flex flex-col hover:text-[#40a9ff] transition-all"
-          >
-            <LogoutOutlined className="md:text-2xl text-xl" />
-            <span className="md:text-xs text-[10px]">Çıkış Yap</span>
-          </Link>
+          <div onClick={logOut}>
+            {" "}
+            <Link className="menu-link flex flex-col hover:text-[#40a9ff] transition-all">
+              <LogoutOutlined className="md:text-2xl text-xl" />
+              <span className="md:text-xs text-[10px]">Çıkış Yap</span>
+            </Link>
+          </div>
         </div>
 
         <Badge count={5} offset={[0, 6]} className="md:hidden flex">

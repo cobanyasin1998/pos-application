@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthCarousel from "../../components/register/AuthCarousel";
 
-
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -20,7 +19,13 @@ const Login = () => {
       const user = await res.json();
 
       if (res.status === 200) {
-     
+        localStorage.setItem(
+          "posUser",
+          JSON.stringify({
+            username: user.username,
+            email: user.email,
+          })
+        );
         message.success("Giriş işlemi başarılı.");
         navigate("/");
       } else if (res.status === 404) {

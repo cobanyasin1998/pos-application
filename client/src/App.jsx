@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import CartPage from "./pages/CartPage";
 import BillPage from "./pages/BillPage";
@@ -15,12 +15,54 @@ function App() {
       <>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/card" element={<CartPage />} />
-            <Route path="/bills" element={<BillPage />} />
-            <Route path="/customers" element={<CustomerPage />} />
-            <Route path="/statistic" element={<StatisticPage />} />
-            <Route path="/products" element={<ProductPage />} />
+            <Route
+              path="/"
+              element={
+                <RouteController>
+                  <HomePage />
+                </RouteController>
+              }
+            />
+            <Route
+              path="/card"
+              element={
+                <RouteController>
+                  <CartPage />{" "}
+                </RouteController>
+              }
+            />
+            <Route
+              path="/bills"
+              element={
+                <RouteController>
+                  <BillPage />
+                </RouteController>
+              }
+            />
+            <Route
+              path="/customers"
+              element={
+                <RouteController>
+                  <CustomerPage />
+                </RouteController>
+              }
+            />
+            <Route
+              path="/statistic"
+              element={
+                <RouteController>
+                  <StatisticPage />
+                </RouteController>
+              }
+            />
+            <Route
+              path="/products"
+              element={
+                <RouteController>
+                  <ProductPage />
+                </RouteController>
+              }
+            />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
           </Routes>
@@ -31,3 +73,11 @@ function App() {
 }
 
 export default App;
+
+export const RouteController = ({ children }) => {
+  if (localStorage.getItem("posUser")) {
+    return children;
+  } else {
+    return <Navigate to="/login" />;
+  }
+};

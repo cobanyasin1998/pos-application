@@ -1,36 +1,31 @@
 const User = require("../models/User.js");
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-//! Register
+//! register
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
     });
-
     await newUser.save();
-
-    res.status(200).json("A new user created succesfully.");
-  } catch (err) {
-    res.status(400).json(err);
+    res.status(200).json("A new user created successfully.");
+  } catch (error) {
+    res.status(500).json(error);
   }
 });
-//! Login
 
+//! login
 router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-
     if (!user) {
       return res.status(404).send({ error: "User not found!" });
     }
-  
 
     const validPassword = await bcrypt.compare(
       req.body.password,
@@ -38,15 +33,12 @@ router.post("/login", async (req, res) => {
     );
 
     if (!validPassword) {
-      res.status(403).send({ error: "Invalid Password" });
+      res.status(403).json("Invalid password!");
     } else {
-      res.status(400).json(user);
+      res.status(200).json(user);
     }
-
-    res.send(user);
-  } catch (err) {
-   
-    res.status(400).json(err);
+  } catch (error) {
+    res.status(500).json(error);
   }
 });
 
